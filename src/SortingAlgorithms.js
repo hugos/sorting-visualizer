@@ -78,29 +78,30 @@ export function getMergeSortAnimations(array) {
   
   export function getBubbleSortAnimations(array) {
     const animations = [];
+    if (array.length <= 1) return array;
+    const auxiliary = array.slice();
+    BubbleSort(array, auxiliary, animations);
+    return animations;
+  }
+  
+  export function BubbleSort(array, auxiliary, animations) {
     for (let i = 0; i < array.length; i++) {
-      for (let j = 0; j < array.length - i - 1; j++) {
+      for (let j = 0; j < array.length; j++) {
           // Push the indices and the colors of the bars being compared
-          animations.push([j, j + 1]);
+          //animations.push([j, j + 1]);
           if (array[j] > array[j+1]) {
-            
+          
           // Push the indices and new heights of the bars being swapped
-          animations.push([j, array[j + 1]]);
-          animations.push([j + 1, array[j]]);
+          animations.push([j, j + 1]);          
+          animations.push([j + 1, j ]);          
+          animations.push([[j, array[j + 1 ]], [ j + 1 ,array[j]]]);
+
+
           let temp = array[j];
-          array[j] = array[j+1];
-          array[j+1] = temp;
-          // Push the indices and the colors of the bars being compared (to change back to original color)
-          // animations.push([j, j + 1]);
-            
-          // swap elements in array
-         // [array[j], array[j+1]] = [array[j+1], array[j]]
-        } else {
-            // push the indices and values of the two elements being compared (but not swapped) to the animations array
-        animations.push([j, array[j]]);
-        animations.push([j + 1, array[j + 1]]);
+          array[j] = array[j + 1];
+          array[j + 1] = temp;                      
         }
-    }
+      }
     }
     return animations;
   }  

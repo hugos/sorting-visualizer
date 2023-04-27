@@ -21,10 +21,31 @@ function SortingVisualizer() {
   const resetArray = () => {
     setIsSorting(false);
     const newArr = [];
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 30; i++) {
       newArr.push(getRandom(20, 1000));
     }
     setArray(newArr);
+  }
+
+  function testSortingAlgorithms() {
+    for (let i = 0; i < 100; i++) {
+      const array = [];
+      const length = getRandom(20, 1000);
+      for (let i = 0; i < length; i++) {
+        array.push(getRandom(-1000, 1000));
+      }
+      const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
+      const mergeSortedArray = getMergeSortAnimations(array.slice());
+      console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
+    }
+  }
+
+  function arraysAreEqual(firstArray, secondArray) {
+    if (firstArray.length !== secondArray.length) return false;
+    for (let i = 0; i < firstArray.length; i++) {
+      if (firstArray[i] !== secondArray[i]) return false;
+      return true;
+    }
   }
 
   function mergeSort() {
@@ -56,109 +77,45 @@ function SortingVisualizer() {
 
   function bubbleSort() {
     console.log("Bubble Sort")
-    const animations = getBubbleSortAnimations(array);
-    console.log("Animations Array:", animations)
+    const arr = [...array];
+    const animations = getBubbleSortAnimations(arr);
     const arrayBars = document.getElementsByClassName("arrayBar");
+    setIsSorting(true)
+    
     for (let i = 0; i < animations.length; i++) {
       const isColorChange = i % 3 !== 2;
       if (isColorChange) {
         const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
-        console.log("Array Bars 1st", arrayBars[barOneIdx])
-        console.log("Array Bars 2st", arrayBars[barTwoIdx])
         const barTwoStyle = arrayBars[barTwoIdx].style;
-        const color = i % 3 === 0 ? 'red' : 'green';
-        setTimeout(() => {
-          barOneStyle.backgroundColor = color;
-          barTwoStyle.backgroundColor = color;
+        const color = i % 3 === 0 ? "red" : 'turquoise';  // Update the color variable to red or purple when necessary
+
+        setTimeout(() => {  
+           barOneStyle.backgroundColor = color;
+           barTwoStyle.backgroundColor = color;
         }, i * 3);
+        
       } else {
         setTimeout(() => {
-          const [barOneIdx, newHeight] = animations[i];
-          const barOneStyle = arrayBars[barOneIdx].style;
-          barOneStyle.height = `${newHeight}px`
-          if (i === animations.length - 1) setIsSorting(false)
+          const [barOneIdx, newHeightOne] = animations[i][0];
+          const [barTwoIdx, newHeightTwo] = animations[i][1];
+
+          arrayBars[barOneIdx].style.height = `${newHeightOne}px`;
+          arrayBars[barTwoIdx].style.height = `${newHeightTwo}px`;
+
+          if (i === animations.length - 1) { 
+            // After the bars are sorted, set them all to green.
+            for (let j = 0; j < arrayBars.length; j++) {
+              arrayBars[j].style.backgroundColor = "green";
+            }
+            setIsSorting(false);
+          }
         },i * 3)
       }
+      
   }
+  // console.log(arr)
 }
-
-//  Big issue with the state render here that was causing the array to sort before the animations
-//  Inside the useEffect hook, the function will only execute after the component has re-rendered
-//  thus, the mergeSort function not executing immediately.
-//   useEffect(() => {
-//     if (isSorting) {
-//       console.log("Render")
-//       const animations = getMergeSortAnimations(array);
-//       const arrayBars = arrayBarsRef.current;
-//       console.log("Animations Array:", animations)
-//       for (let i = 0; i < animations.length; i++) {
-//         const isColorChange = i % 3 !== 2;
-//         if (isColorChange) {
-//           const [barOneIdx, barTwoIdx] = animations[i];
-//           const barOneStyle = arrayBars[barOneIdx].style;
-//           const barTwoStyle = arrayBars[barTwoIdx].style;
-//           const color = i % 3 === 0 ? 'red' : 'green';
-//           setTimeout(() => {
-//             barOneStyle.backgroundColor = color;
-//             barTwoStyle.backgroundColor = color;
-//           }, i * 3);
-//         } else {
-//           setTimeout(() => {
-//             const [barOneIdx, newHeight] = animations[i];
-//             const barOneStyle = arrayBars[barOneIdx].style;
-//             barOneStyle.height = `${newHeight}px`
-//             if (i === animations.length - 1) setIsSorting(false)
-//           },i * 3)
-//         }
-//       }
-//     }
-//   }, [isSorting])
-
-
-  // BUBBLE SORT
-  /* useLayoutEffect(() => {
-      if (isSorting) {
-      console.log("Render")
-      const animations = getBubbleSortAnimations(array);
-      console.log("Animations Array:", animations)
-      const arrayBars = arrayBarsRef.current;
-      console.log("Array Bars Current:", arrayBarsRef.current)
-      for (let i = 0; i < animations.length; i++) {
-        const isColorChange = i % 3 !== 2;
-        if (isColorChange) {
-          const [barOneIdx, barTwoIdx] = animations[i];
-          const barOneStyle = arrayBars[barOneIdx].style;
-          console.log("Array Bars 1st", arrayBars[barOneIdx])
-          console.log("Array Bars 2st", arrayBars[barTwoIdx])
-          const barTwoStyle = arrayBars[barTwoIdx].style;
-          const color = i % 3 === 0 ? 'red' : 'green';
-          setTimeout(() => {
-            barOneStyle.backgroundColor = color;
-            barTwoStyle.backgroundColor = color;
-          }, i * 3);
-        } else {
-          setTimeout(() => {
-            const [barOneIdx, newHeight] = animations[i];
-            const barOneStyle = arrayBars[barOneIdx].style;
-            barOneStyle.height = `${newHeight}px`
-            if (i === animations.length - 1) setIsSorting(false)
-          },i * 3)
-        }
-      }
-    }
-  }, [isSorting]) */
-
-//   function mergeSort() {
-//     console.log("Merge Sort")
-//     setIsSorting(true)
-//   }
-
-//   function bubbleSort() {
-//     console.log("Bubble Sort")
-//     if (!isSorting) setIsSorting(true)
-//   }
-
 
   return (
     <div>
@@ -177,6 +134,9 @@ function SortingVisualizer() {
       </button>
       <button onClick={bubbleSort} disabled={isSorting}>
         Bubble Sort
+      </button>
+      <button onClick={testSortingAlgorithms} disabled={isSorting}>
+        Test Sort
       </button>
     </div>
   )
