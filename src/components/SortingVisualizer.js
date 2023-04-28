@@ -1,7 +1,7 @@
 /* eslint-disable no-loop-func */
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 //import styles from '../styles/SortingVisualizer.module.css';
-import {getMergeSortAnimations, getBubbleSortAnimations} from '../SortingAlgorithms';
+import {getMergeSortAnimations, getBubbleSortAnimations, getSelectionSortAnimations} from '../SortingAlgorithms';
 
 
 function SortingVisualizer() {
@@ -43,6 +43,7 @@ function SortingVisualizer() {
       newArr.push(getRandom(20, 1000));
     }
     setArray(newArr);
+    setArrayLength(newArr.length);
   }
 
   function testSortingAlgorithms() {
@@ -114,7 +115,7 @@ function SortingVisualizer() {
         setTimeout(() => {
            barOneStyle.backgroundColor = color;
            barTwoStyle.backgroundColor = color;
-        }, i * timeoutDuration);
+        }, i * 30);
 
       } else {
         setTimeout(() => {
@@ -125,11 +126,16 @@ function SortingVisualizer() {
           arrayBars[barTwoIdx].style.height = `${newHeightTwo}px`;
           console.log("Array Bar:", arrayBars[barTwoIdx])
 
+
+
+          // Need another timeout, otherwise the animation is too fast and will skip this code.
+          // This ensures this code will be executed after a short delay (1ms)
+          setTimeout(() => {
           // Change the color of the bar that has just been sorted to green after a delay
           if (barTwoIdx === arr.length - 1 - lastSortedIndex) {
               arrayBars[barTwoIdx].style.backgroundColor = "green";
               lastSortedIndex++; // update the index of the last sorted bar
-          }
+          }}, 1)
 
           if (i === animations.length - 1) {
             // After the bars are sorted, set them all to green.
@@ -138,10 +144,70 @@ function SortingVisualizer() {
             }
             setIsSorting(false);
           }
-        },i * timeoutDuration)
+        },i * 30)
       }
   }
 }
+
+
+  function selectionSort() {
+    const arr = [...array];
+    const animations = getSelectionSortAnimations(arr);
+    const arrayBars = document.getElementsByClassName("arrayBar");
+    setIsSorting(true);
+
+    const sortedIndices = [];
+    const timeoutDuration = Math.max(30, Math.floor(3000 / array.length));
+
+    for (let i = 0; i < animations.length; i++) {
+
+      const isColorChange = i % 3 !== 2;
+      if (isColorChange) {
+        const [barOneIdx, barTwoIdx] = animations[i];
+        const barOneStyle = arrayBars[barOneIdx].style;
+        const barTwoStyle = arrayBars[barTwoIdx].style;
+        const color = i % 3 === 0 ? "red" : 'turquoise';
+
+        setTimeout(() => {
+           barOneStyle.backgroundColor = color;
+           barTwoStyle.backgroundColor = color;
+        }, i * 30);
+
+      } else {
+        setTimeout(() => {
+          const [barOneIdx, newHeightOne] = animations[i][0];
+          const [barTwoIdx, newHeightTwo] = animations[i][1];
+
+          arrayBars[barOneIdx].style.height = `${newHeightOne}px`;
+          arrayBars[barTwoIdx].style.height = `${newHeightTwo}px`;
+          console.log("Array Bar:", arrayBars[barTwoIdx])
+
+           // Check if the current bar is sorted, and add its index to sortedIndices array
+        if (!sortedIndices.includes(barOneIdx) && newHeightOne <= newHeightTwo) {
+          sortedIndices.push(barOneIdx);
+        }
+        if (!sortedIndices.includes(barTwoIdx) && newHeightTwo <= newHeightOne) {
+          sortedIndices.push(barTwoIdx);
+        }
+
+        // Set the background color of sorted bars to green
+        sortedIndices.forEach(idx => {
+          arrayBars[idx].style.backgroundColor = "green";
+        });
+
+          if (i === animations.length - 1) {
+            // After the bars are sorted, set them all to green.
+            for (let j = 0; j < arrayBars.length; j++) {
+              arrayBars[j].style.backgroundColor = 'green'
+            }
+            setIsSorting(false);
+          }
+        },i * 30)
+      }
+  }
+}
+
+
 
   return (
     <div>
@@ -162,6 +228,9 @@ function SortingVisualizer() {
       </button>
       <button onClick={bubbleSort} disabled={isSorting}>
         Bubble Sort
+      </button>
+      <button onClick={selectionSort} disabled={isSorting}>
+        Selection Sort
       </button>
       <button onClick={testSortingAlgorithms} disabled={isSorting}>
         Test Sort
