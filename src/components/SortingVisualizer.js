@@ -21,7 +21,7 @@ function SortingVisualizer() {
   const resetArray = () => {
     setIsSorting(false);
     const newArr = [];
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 20; i++) {
       newArr.push(getRandom(20, 1000));
     }
     setArray(newArr);
@@ -80,21 +80,27 @@ function SortingVisualizer() {
     const arr = [...array];
     const animations = getBubbleSortAnimations(arr);
     const arrayBars = document.getElementsByClassName("arrayBar");
-    setIsSorting(true)
-    
+    setIsSorting(true);
+    let lastSortedIndex = 0; // initialize the index of the last sorted bar
+    let isSorted = false;
+
+    const timeoutDuration = Math.max(30, Math.floor(3000 / array.length));
+
+
     for (let i = 0; i < animations.length; i++) {
+
       const isColorChange = i % 3 !== 2;
       if (isColorChange) {
         const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
         const barTwoStyle = arrayBars[barTwoIdx].style;
-        const color = i % 3 === 0 ? "red" : 'turquoise';  // Update the color variable to red or purple when necessary
+        const color = i % 3 === 0 ? "red" : 'turquoise';  
 
-        setTimeout(() => {  
+        setTimeout(() => {
            barOneStyle.backgroundColor = color;
            barTwoStyle.backgroundColor = color;
-        }, i * 3);
-        
+        }, i * timeoutDuration);
+
       } else {
         setTimeout(() => {
           const [barOneIdx, newHeightOne] = animations[i][0];
@@ -102,19 +108,28 @@ function SortingVisualizer() {
 
           arrayBars[barOneIdx].style.height = `${newHeightOne}px`;
           arrayBars[barTwoIdx].style.height = `${newHeightTwo}px`;
+          console.log("Array Bar:", arrayBars[barTwoIdx])
 
-          if (i === animations.length - 1) { 
+          // Change the color of the bar that has just been sorted to green after a delay
+          if (barTwoIdx === arr.length - 1 - lastSortedIndex) {
+              arrayBars[barTwoIdx].style.backgroundColor = "green";
+              lastSortedIndex++; // update the index of the last sorted bar
+            if (lastSortedIndex === arr.length - 1) {
+              setIsSorting(false);
+              isSorted = true;
+            }
+          }
+
+          if (i === animations.length - 1) {
             // After the bars are sorted, set them all to green.
             for (let j = 0; j < arrayBars.length; j++) {
-              arrayBars[j].style.backgroundColor = "green";
+              arrayBars[j].style.backgroundColor = 'green'
             }
             setIsSorting(false);
           }
-        },i * 3)
+        },i * timeoutDuration)
       }
-      
   }
-  // console.log(arr)
 }
 
   return (
