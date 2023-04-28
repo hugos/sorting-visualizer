@@ -1,16 +1,34 @@
+/* eslint-disable no-loop-func */
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 //import styles from '../styles/SortingVisualizer.module.css';
 import {getMergeSortAnimations, getBubbleSortAnimations} from '../SortingAlgorithms';
 
 
 function SortingVisualizer() {
-  const [array, setArray] = useState([]);
+  const [arrayLength, setArrayLength] = useState(20)
+  const [array, setArray] = useState(generateArray(arrayLength));
   const [isSorting, setIsSorting] = useState(false);
   // Need to use the useRef hook because Nextjs is SSR and the style is not available immediately.
   const arrayBarsRef = useRef([]);
 
+
+  function generateArray(length) {
+    const newArr = [];
+    for (let i = 0; i < length; i++) {
+      newArr.push(getRandom(20, 1000))
+    }
+    return newArr;
+  }
+
+
   function getRandom(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
+  }
+
+  const handleSliderChange = (event) => {
+    const newLength = parseInt(event.target.value);
+    setArrayLength(newLength);
+    setArray(generateArray(newLength))
   }
 
   useEffect(() => {
@@ -82,10 +100,7 @@ function SortingVisualizer() {
     const arrayBars = document.getElementsByClassName("arrayBar");
     setIsSorting(true);
     let lastSortedIndex = 0; // initialize the index of the last sorted bar
-    let isSorted = false;
-
     const timeoutDuration = Math.max(30, Math.floor(3000 / array.length));
-
 
     for (let i = 0; i < animations.length; i++) {
 
@@ -94,7 +109,7 @@ function SortingVisualizer() {
         const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
         const barTwoStyle = arrayBars[barTwoIdx].style;
-        const color = i % 3 === 0 ? "red" : 'turquoise';  
+        const color = i % 3 === 0 ? "red" : 'turquoise';
 
         setTimeout(() => {
            barOneStyle.backgroundColor = color;
@@ -114,10 +129,6 @@ function SortingVisualizer() {
           if (barTwoIdx === arr.length - 1 - lastSortedIndex) {
               arrayBars[barTwoIdx].style.backgroundColor = "green";
               lastSortedIndex++; // update the index of the last sorted bar
-            if (lastSortedIndex === arr.length - 1) {
-              setIsSorting(false);
-              isSorted = true;
-            }
           }
 
           if (i === animations.length - 1) {
@@ -141,6 +152,8 @@ function SortingVisualizer() {
          )
        })}
       </div>
+      <input type="range" step="10" min="20" max="200" value={arrayLength} onChange={handleSliderChange}/>
+      <span>{arrayLength}</span>
       <button onClick={resetArray} disabled={isSorting}>
         Generate New Array
       </button>
