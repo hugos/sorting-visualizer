@@ -24,6 +24,52 @@
   color: white;
 }
 
+.controlsWrapper {
+  background-color: #001529;
+  height: 12vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.lengthController {
+  display: flex;
+  margin-bottom: 15px;
+  
+}
+.algorithmButtons {
+  flex-direction: row;
+  
+}
+.magicButton {
+  background: #8cb8c7;
+  border-radius: 999px;
+  box-shadow: #8cb8c7 0 10px 20px -10px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  opacity: 1;
+  outline: 0 solid transparent;
+  padding: 8px 18px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: fit-content;
+  word-break: break-word;
+  border: 0;
+  margin: 0 5px;
+}
+
+.magicButton:disabled {
+  background-color: #282c34;
+  box-shadow: #282c34 0 10px 20px -10px;
+}
+
+
 .App-link {
   color: #61dafb;
 }
@@ -37,10 +83,10 @@
 
 .arrayBar {
   width: 0.5vw;
-  background-color: turquoise ;
+  background-color: #add8e6;
   display: inline-block;
   margin: 0 1px;
-  max-height: 90vh;
+  max-height: 88vh;
 }
 
 @keyframes App-logo-spin {

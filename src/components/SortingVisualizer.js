@@ -1,5 +1,5 @@
 /* eslint-disable no-loop-func */
-import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 //import styles from '../styles/SortingVisualizer.module.css';
 import {getMergeSortAnimations, getBubbleSortAnimations, getSelectionSortAnimations} from '../SortingAlgorithms';
 
@@ -10,7 +10,7 @@ function SortingVisualizer() {
   const [isSorting, setIsSorting] = useState(false);
   // Need to use the useRef hook because Nextjs is SSR and the style is not available immediately.
   const arrayBarsRef = useRef([]);
-
+  const PRIMARY_COLOR = '#add8e6';
 
   function generateArray(length) {
     const newArr = [];
@@ -33,7 +33,6 @@ function SortingVisualizer() {
 
   useEffect(() => {
     resetArray();
-   // arrayBarsRef.current = array.map((value, idx) => arrayBarsRef.current[idx])
   }, [])
 
   const resetArray = () => {
@@ -89,8 +88,7 @@ function SortingVisualizer() {
         const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
         const barTwoStyle = arrayBars[barTwoIdx].style;
-        const color = i % 3 === 0 ? "red" : 'turquoise';
-
+        const color = i % 3 === 0 ? "red" : PRIMARY_COLOR;
         setTimeout(() => {
            barOneStyle.backgroundColor = color;
            barTwoStyle.backgroundColor = color;
@@ -142,7 +140,7 @@ function SortingVisualizer() {
         const [barOneIdx, barTwoIdx] = animations[i];
         const barOneStyle = arrayBars[barOneIdx].style;
         const barTwoStyle = arrayBars[barTwoIdx].style;
-        const color = i % 3 === 0 ? "red" : 'turquoise';
+        const color = i % 3 === 0 ? "red" : PRIMARY_COLOR;
 
         setTimeout(() => {
            barOneStyle.backgroundColor = color;
@@ -194,20 +192,26 @@ function SortingVisualizer() {
          )
        })}
       </div>
-      <input type="range" step="10" min="20" max="200" value={arrayLength} onChange={handleSliderChange}/>
-      <span>{arrayLength}</span>
-      <button onClick={resetArray} disabled={isSorting}>
-        Generate New Array
-      </button>
-      <button onClick={mergeSort} disabled={isSorting}>
-        Merge Sort
-      </button>
-      <button onClick={bubbleSort} disabled={isSorting}>
-        Bubble Sort
-      </button>
-      <button onClick={selectionSort} disabled={isSorting}>
-        Selection Sort
-      </button>
+    <div className='controlsWrapper'>
+      <div className='lengthController'>
+        <input type="range" step="10" min="20" max="200" value={arrayLength} onChange={handleSliderChange}/>
+        <span>{arrayLength}</span>
+      </div>
+      <div className='algorithmButtons'>
+        <button className='magicButton' onClick={resetArray} disabled={isSorting}>
+          Generate New Array
+        </button>
+        <button className='magicButton' onClick={mergeSort} disabled={isSorting}>
+          Merge Sort
+        </button>
+        <button className='magicButton' onClick={bubbleSort} disabled={isSorting}>
+          Bubble Sort
+        </button>
+        <button className='magicButton' onClick={selectionSort} disabled={isSorting}>
+          Selection Sort
+        </button>
+      </div>
+    </div>
     </div>
   )
 }
