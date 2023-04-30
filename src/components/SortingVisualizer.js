@@ -46,28 +46,7 @@ function SortingVisualizer() {
     setArrayLength(newArr.length);
   }
 
-  function testSortingAlgorithms() {
-    for (let i = 0; i < 100; i++) {
-      const array = [];
-      const length = getRandom(20, 1000);
-      for (let i = 0; i < length; i++) {
-        array.push(getRandom(-1000, 1000));
-      }
-      const javaScriptSortedArray = array.slice().sort((a, b) => a - b);
-      const mergeSortedArray = getMergeSortAnimations(array.slice());
-      console.log(arraysAreEqual(javaScriptSortedArray, mergeSortedArray));
-    }
-  }
-
-  function arraysAreEqual(firstArray, secondArray) {
-    if (firstArray.length !== secondArray.length) return false;
-    for (let i = 0; i < firstArray.length; i++) {
-      if (firstArray[i] !== secondArray[i]) return false;
-      return true;
-    }
-  }
-
-  function mergeSort() {
+ function mergeSort() {
     console.log("Merge Sort")
     const animations = getMergeSortAnimations(array);
     const arrayBars = arrayBarsRef.current;
@@ -124,9 +103,6 @@ function SortingVisualizer() {
 
           arrayBars[barOneIdx].style.height = `${newHeightOne}px`;
           arrayBars[barTwoIdx].style.height = `${newHeightTwo}px`;
-          console.log("Array Bar:", arrayBars[barTwoIdx])
-
-
 
           // Need another timeout, otherwise the animation is too fast and will skip this code.
           // This ensures this code will be executed after a short delay (1ms)
@@ -231,9 +207,6 @@ function SortingVisualizer() {
       </button>
       <button onClick={selectionSort} disabled={isSorting}>
         Selection Sort
-      </button>
-      <button onClick={testSortingAlgorithms} disabled={isSorting}>
-        Test Sort
       </button>
     </div>
   )
